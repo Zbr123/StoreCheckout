@@ -1,0 +1,14 @@
+{
+  "cucumber.glue": [
+    "step_definitions/**/*.mjs",
+    "step_definitions/**/*.js"
+  ],
+  "cucumber.features": [
+    "features/**/*.feature"
+  ],
+  "cucumberautocomplete.steps": [
+    "step_definitions/**/*.mjs",
+    "step_definitions/**/*.js"
+  ],
+  "cucumberautocomplete.syncfeatures": "features/**/*.feature"
+}

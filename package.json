@@ -1,0 +1,24 @@
+{
+  "name": "playwright-bdd-pom-framework",
+  "version": "1.0.0",
+  "description": "Playwright automation framework with BDD (Cucumber) and Page Object Model",
+  "type": "module",
+  "scripts": {
+    "test": "cucumber-js --import support/world.mjs --import support/hooks.mjs --import step_definitions/wait.steps.mjs --import step_definitions/playwright_docs.steps.mjs --import step_definitions/store_checkout.steps.mjs",
+    "test:headedc": "cross-env HEADED=1 cucumber-js --import support/world.mjs --import support/hooks.mjs --import step_definitions/wait.steps.mjs --import step_definitions/playwright_docs.steps.mjs --import step_definitions/store_checkout.steps.mjs",
+    "test:store": "cross-env BASE_URL=https://9975.qa-bkstr.com cucumber-js --import support/world.mjs --import support/hooks.mjs --import step_definitions/wait.steps.mjs --import step_definitions/store_checkout.steps.mjs features/store_checkout.feature",
+    "test:store:headed": "cross-env HEADED=1 BASE_URL=https://9975.qa-bkstr.com cucumber-js --import support/world.mjs --import support/hooks.mjs --import step_definitions/wait.steps.mjs --import step_definitions/store_checkout.steps.mjs features/store_checkout.feature",
+    "test:debug": "cross-env PWDEBUG=1 cucumber-js --import support/world.mjs --import support/hooks.mjs --import step_definitions/wait.steps.mjs --import step_definitions/playwright_docs.steps.mjs --import step_definitions/store_checkout.steps.mjs",
+    "report": "npx playwright show-report"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^10.8.0",
+    "@cucumber/pretty-formatter": "^1.0.0",
+    "@playwright/test": "^1.49.0",
+    "cross-env": "^7.0.3"
+  },
+  "dependencies": {
+    "playwright-extra": "^4.3.6",
+    "playwright-extra-plugin-stealth": "^0.0.1"
+  }
+}
