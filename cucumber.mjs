@@ -15,6 +15,6 @@ export default {
     formatOptions: {
       snippetInterface: 'async',
     },
-    parallel: 1,
+    parallel: 3,  // Run 3 scenarios in parallel (faster execution)
   },
 };
