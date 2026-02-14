@@ -15,7 +15,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 30  # Reduced with parallel execution (3 scenarios at once)
+    timeout-minutes: 60  # Sufficient time for parallel execution with setup
     
     strategy:
       fail-fast: false
@@ -34,11 +34,26 @@ jobs:
           node-version: '20'
           cache: 'npm'
       
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      
       - name: Install dependencies
         run: npm ci
       
       - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps ${{ matrix.browser }}
+      
+      - name: Install Playwright System Dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps ${{ matrix.browser }}
       
       - name: Create reports directory
         run: mkdir -p reports
