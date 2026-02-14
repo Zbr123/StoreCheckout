@@ -1,28 +1,30 @@
 # Playwright + BDD (Cucumber) + POM Framework
 
-JavaScript automation framework using **Playwright**, **Cucumber** (BDD), and **Page Object Model** design pattern.
+JavaScript automation framework for **store checkout** using **Playwright**, **Cucumber** (BDD), and the **Page Object Model** design pattern. Includes human-like behavior and stealth settings to improve reliability against anti-bot and payment flows.
 
-## Structure
+---
 
-```
-store/
-├── features/              # Gherkin .feature files (BDD)
-├── pages/                 # Page Object Model
-│   ├── BasePage.mjs       # Base class for all pages
-│   └── store/             # Store checkout pages
-├── step_definitions/      # Cucumber step definitions
-├── support/               # World, hooks, config
-│   ├── world.mjs          # Playwright browser/context/page lifecycle
-│   └── hooks.mjs          # Before/After hooks
-├── cucumber.mjs
-├── playwright.config.js
-└── package.json
-```
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Run Tests](#run-tests)
+- [Project Structure](#project-structure)
+- [Scenarios](#scenarios)
+- [Configuration](#configuration)
+- [Page Objects & Locators](#page-objects--locators)
+- [Reports](#reports)
+- [Adding New Tests](#adding-new-tests)
+
+---
 
 ## Prerequisites
 
-- **Node.js 18, 20, or 22** (Cucumber 11 does not support Node 21; use 20 or 22 LTS)
-- npm
+- **Node.js 18, 20, or 22** (LTS recommended; avoid Node 21)
+- **npm**
+- **Chromium** (installed via `npx playwright install`)
+
+---
 
 ## Setup
 
@@ -31,47 +33,140 @@ npm install
 npx playwright install
 ```
 
-## Run tests
+This installs Cucumber, Playwright, and optional stealth plugins. The first run of tests will use the installed Chromium browser.
+
+---
+
+## Run Tests
+
+| Command | Description |
+|--------|-------------|
+| `npm test` | Run all BDD scenarios (headless). Set `BASE_URL` for store (see [Configuration](#configuration)). |
+| `npm run test:headed` | Run all scenarios with the browser window visible. |
+| `npm run test:store` | Run **only** `store_checkout.feature` (headless, with `BASE_URL` set to the QA store). |
+| `npm run test:store:headed` | Run only store checkout with the browser visible. |
+| `npm run test:debug` | Run with Playwright Inspector (pause on failure, step through). |
+| `npm run report` | Open the last Playwright HTML report (if generated). |
+
+**Examples:**
 
 ```bash
-# Run all BDD scenarios (headless)
-npm test
+# Store checkout only (recommended for daily runs)
+npm run test:store
 
-# Run with browser visible
-npm run test:headed
+# Store checkout with visible browser
+npm run test:store:headed
 
-# Debug (Playwright inspector)
-npm run test:debug
+# All scenarios (ensure BASE_URL points to your store if all features are store-based)
+BASE_URL=https://9975.qa-bkstr.com npm test
 ```
+
+---
+
+## Project Structure
+
+```
+StoreCheckout/
+├── features/
+│   └── store_checkout.feature    # All checkout scenarios (Gherkin)
+├── pages/
+│   ├── BasePage.mjs              # Base class for all page objects
+│   └── store/
+│       ├── PasswordPage.mjs      # Store password gate
+│       ├── DashboardPage.mjs     # Product listing, click product by ordinal
+│       ├── ProductPage.mjs       # Size, quantity, add to cart
+│       ├── CartPage.mjs          # Cart review, checkout button
+│       └── CheckoutPage.mjs      # Email, address, shipping, payment, financial aid
+├── step_definitions/
+│   ├── store_checkout.steps.mjs  # Steps for store scenarios
+│   └── wait.steps.mjs            # Generic "I wait X seconds"
+├── support/
+│   ├── world.mjs                 # Playwright browser/context/page, stealth setup
+│   ├── hooks.mjs                 # Before/After, default timeout (120s)
+│   ├── storeConfig.mjs           # STORE_BASE_URL, VARIANT_PRODUCT_URL
+│   ├── humanBehavior.mjs         # humanType, humanClick, humanWait, random delays
+│   └── worldTypes.d.ts           # TypeScript types for IDE Go-to-Definition
+├── reports/                      # Cucumber HTML report (generated)
+├── cucumber.mjs                  # Cucumber config (paths, imports, formatters)
+├── playwright.config.js         # Playwright config (used by report tooling)
+├── jsconfig.json                # IDE JS/type checking for .mjs and Go-to-Definition
+└── package.json
+```
+
+---
+
+## Scenarios
+
+All scenarios live in `features/store_checkout.feature`:
+
+| Scenario | Description |
+|----------|-------------|
+| Checkout process with single credit card | First product → cart → checkout → pay. |
+| Checkout with small / Medium / Large variant | Uses fixed **variant product URL** (Small, Medium, Large). |
+| Checkout with single discount code | Applies discount code (e.g. AUTOTEST) before pay. |
+| Checkout with single gift card | Applies one gift card. |
+| Checkout with multiple gift cards | Applies two gift cards. |
+| Checkout with multiple discount codes | Applies two discount codes. |
+| Checkout with multiple item quantity | First product, quantity 2, then checkout. |
+| Checkout with multiple cart items | First product → add to cart → back → second product → add to cart → checkout. |
+| Checkout with multiple cart items and financial aid | Two products in cart, then financial aid checkbox + student code + LOOK UP / APPLY FUNDS before payment. |
+
+Variant scenarios (Small/Medium/Large) use a **fixed product URL** so they do not depend on dashboard order. The URL is set in `support/storeConfig.mjs` (`VARIANT_PRODUCT_URL`).
+
+---
+
+## Configuration
+
+### Environment variables
+
+| Variable | Purpose | Default |
+|----------|---------|--------|
+| `BASE_URL` | Browser context base URL (used by world). | `https://playwright.dev` (overridden by `test:store` to QA store) |
+| `STORE_BASE_URL` | Store root for password page and navigation. | `https://9975.qa-bkstr.com` |
+| `VARIANT_PRODUCT_URL` | Product page used for Small/Medium/Large variant scenarios. | URL in `support/storeConfig.mjs` |
+| `HEADED` | Set to `1` to run with visible browser. | Unset (headless) |
+| `DISABLE_HUMAN_BEHAVIOR` | Set to `1` to disable random delays and human-like typing/click. | Unset (human behavior on) |
+
+### Config file
+
+- **`support/storeConfig.mjs`** – Exports `STORE_BASE_URL` and `VARIANT_PRODUCT_URL`. Change defaults or set env vars to point to another environment.
+
+---
+
+## Page Objects & Locators
+
+All selectors are in `pages/store/`. Update them to match your store’s markup.
+
+| Page | Main elements |
+|------|----------------|
+| **PasswordPage** | Enter-using-password button, password input, submit. Cookie consent dismissal. |
+| **DashboardPage** | Product cards, click by ordinal (“first”, “second”, …). |
+| **ProductPage** | Size variant (radio), quantity input `input[type="number"][name="quantity"]`, add-to-cart button. |
+| **CartPage** | Checkout button. |
+| **CheckoutPage** | Email, ship/pickup, name, address, city, state, zip, phone, shipping method, gift/discount field, **financial aid checkbox** (`#fa-checkbox`), **student ID** (`#student-id`), payment iframes (card number, name, expiry, CVV), pay-now button, order-confirmed message. |
+
+The framework uses **human-like behavior** (random delays, typed input, hover-before-click) and **stealth** settings in `world.mjs` to reduce detection and payment failures. Do not remove these unless debugging.
+
+---
 
 ## Reports
 
-- **Cucumber HTML**: `reports/cucumber-report.html`
-- **Playwright**: use `npx playwright show-report` if using Playwright reporter
+- **Cucumber HTML report:** `reports/cucumber-report.html` (generated after a run with the default config).
+- **Playwright report:** Run `npm run report` to open the last Playwright HTML report if one was generated.
 
-## Store checkout scenario
+---
 
-`features/store_checkout.feature` automates the full flow: password page → dashboard → product (size, quantity) → add to cart → checkout (email, address, payment) → pay now → order confirmed.
+## Adding New Tests
 
-**Run only store scenario:**
+1. **Scenarios** – Add or edit scenarios in `features/store_checkout.feature` (or a new `.feature` file under `features/`).
+2. **Steps** – Implement or reuse steps in `step_definitions/store_checkout.steps.mjs`. For new page interactions, add methods to the right page object in `pages/store/`.
+3. **Page objects** – New pages should extend `BasePage.mjs` and use `humanBehavior.mjs` helpers where appropriate.
+4. **Types (IDE)** – If you add new page objects used from steps, extend `support/worldTypes.d.ts` so Go-to-Definition keeps working in the IDE.
 
-```bash
-npm run test:store          # headless
-npm run test:store:headed   # browser visible
-```
+---
 
-**Locators:** All selectors are placeholders in `pages/store/`. Update them to match your site:
+## License & Credits
 
-- `PasswordPage.mjs` – enter-using-password button, password input, submit
-- `DashboardPage.mjs` – first product link/card
-- `ProductPage.mjs` – size variant, quantity, add to cart
-- `CartPage.mjs` – checkout button
-- `CheckoutPage.mjs` – email, ship/pickup, name, address, city, state, zip, phone, shipping method, card fields, pay now, order-confirmed message
-
-Set store URL via env: `STORE_BASE_URL=https://9975.qa-bkstr.com` (default in `support/storeConfig.mjs`).
-
-## Adding new tests
-
-1. Add a `.feature` file in `features/` with Gherkin (Given/When/Then).
-2. Add or reuse step definitions in `step_definitions/`.
-3. Use or create page objects in `pages/` that extend `BasePage.mjs`.
+- **Playwright** – [playwright.dev](https://playwright.dev)
+- **Cucumber** – [cucumber.io](https://cucumber.io)
+- Store and flows are for the configured QA store (e.g. 9975.qa-bkstr.com).
