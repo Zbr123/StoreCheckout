@@ -1,0 +1,74 @@
+name: Quick Test - Single Scenario
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  quick-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: |
+            ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright Browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      
+      - name: Install Playwright System Dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium
+      
+      - name: Create reports directory
+        run: mkdir -p reports
+      
+      - name: Run single test scenario
+        run: npx cucumber-js --import support/world.mjs --import support/hooks.mjs --import step_definitions/wait.steps.mjs --import step_definitions/store_checkout.steps.mjs features/store_checkout.feature:7 --format html:reports/cucumber-report.html --format progress-bar
+        env:
+          CI: true
+          BASE_URL: https://9975.qa-bkstr.com
+        continue-on-error: true
+      
+      - name: List reports directory
+        if: always()
+        run: ls -la reports/ || echo "Reports directory not found"
+      
+      - name: Check if report exists
+        if: always()
+        run: |
+          if [ -f "reports/cucumber-report.html" ]; then
+            echo "✅ SUCCESS: Report generated!"
+            echo "File size: $(du -h reports/cucumber-report.html | cut -f1)"
+          else
+            echo "❌ FAILED: Report NOT generated!"
+            exit 1
+          fi
+      
+      - name: Upload Cucumber HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quick-test-report
+          path: reports/
+          retention-days: 7
+
