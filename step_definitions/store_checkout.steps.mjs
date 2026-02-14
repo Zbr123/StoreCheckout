@@ -1,5 +1,6 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
+import { VARIANT_PRODUCT_URL } from '../support/storeConfig.mjs';
 import { PasswordPage } from '../pages/store/PasswordPage.mjs';
 import { DashboardPage } from '../pages/store/DashboardPage.mjs';
 import { ProductPage } from '../pages/store/ProductPage.mjs';
@@ -19,9 +20,20 @@ When('I enter password {string} and submit', async function (password) {
   await this.passwordPage.enterPasswordAndSubmit(password);
 });
 
-When('I click the first product on the dashboard', async function () {
+When('I open the variant product page', async function () {
+  await this.page.goto(VARIANT_PRODUCT_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+  await this.page.waitForLoadState('domcontentloaded').catch(() => {});
+  this.productPage = new ProductPage(this.page);
+});
+
+When('I go back to the previous page', async function () {
+  await this.page.goBack();
+  await this.page.waitForLoadState('domcontentloaded').catch(() => {});
+});
+
+When('I click the {string} product on the dashboard', async function (ordinal) {
   this.dashboardPage = new DashboardPage(this.page);
-  await this.dashboardPage.clickFirstProduct();
+  await this.dashboardPage.clickProductByOrdinal(ordinal);
   this.productPage = new ProductPage(this.page);
 });
 
@@ -92,6 +104,14 @@ When('I enter phone number {string}', async function (phone) {
 
 When('I select shipping method {string}', async function (method) {
   await this.checkoutPage.selectShippingMethod(method);
+});
+
+When('I select the financial aid checkbox', async function () {
+  await this.checkoutPage.selectFinancialAidCheckbox();
+});
+
+When('I enter student code {string}', async function (code) {
+  await this.checkoutPage.enterStudentCode(code);
 });
 
 When('I provide payment information', async function (dataTable) {

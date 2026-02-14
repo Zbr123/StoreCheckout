@@ -5,7 +5,6 @@ export default {
       'support/world.mjs',
       'support/hooks.mjs',
       'step_definitions/wait.steps.mjs',
-      'step_definitions/playwright_docs.steps.mjs',
       'step_definitions/store_checkout.steps.mjs',
     ],
     format: [

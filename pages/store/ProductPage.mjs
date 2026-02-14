@@ -11,7 +11,7 @@ export class ProductPage extends BasePage {
     return {
       sizeVariant: '[data-testid="size-select"], select[name="size"], .size-option, button:has-text("{value}"), [data-option="size"]',
       sizeOption: (value) => `button:has-text("${value}"), select[name="size"] option:has-text("${value}"), [data-size="${value}"]`,
-      quantityInput: 'input[name="quantity"], [data-testid="quantity"], .quantity-input, input[type="number"]',
+      quantityInput: 'input[type="number"][name="quantity"]',
       quantitySelect: 'select[name="quantity"], [data-testid="quantity-select"]',
       addToCartBtn: 'button[id="BuyButtons-ProductSubmitButton-AR3NOWk9KR25zdGR2R__add-to-cart"]',
     };
@@ -42,12 +42,14 @@ export class ProductPage extends BasePage {
   }
 
   async selectQuantity(quantity) {
+    await this.waitForProductPage();
     await humanWait(this.page, 300, 600);
     const qtyInput = this.page.locator(this.selectors.quantityInput);
     const qtySelect = this.page.locator(this.selectors.quantitySelect);
     if (await qtyInput.count() > 0) {
       await qtyInput.first().scrollIntoViewIfNeeded();
       await humanWait(this.page, 200, 400);
+      await qtyInput.first().fill('');
       await qtyInput.first().fill(String(quantity));
     } else if (await qtySelect.count() > 0) {
       await qtySelect.selectOption({ label: String(quantity) });

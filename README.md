@@ -9,14 +9,13 @@ store/
 ├── features/              # Gherkin .feature files (BDD)
 ├── pages/                 # Page Object Model
 │   ├── BasePage.mjs       # Base class for all pages
-│   └── PlaywrightHomePage.mjs
+│   └── store/             # Store checkout pages
 ├── step_definitions/      # Cucumber step definitions
 ├── support/               # World, hooks, config
 │   ├── world.mjs          # Playwright browser/context/page lifecycle
 │   └── hooks.mjs          # Before/After hooks
-├── cucumber.config.js
+├── cucumber.mjs
 ├── playwright.config.js
-├── run-cucumber.mjs       # Cucumber runner
 └── package.json
 ```
 
@@ -49,16 +48,6 @@ npm run test:debug
 
 - **Cucumber HTML**: `reports/cucumber-report.html`
 - **Playwright**: use `npx playwright show-report` if using Playwright reporter
-
-## Example scenario
-
-The included feature `features/playwright_docs.feature`:
-
-1. Opens the Playwright homepage
-2. Clicks "Get Started"
-3. Asserts we are on the docs and the page title contains "Introduction"
-
-Steps use the **PlaywrightHomePage** page object (POM) and the **PlaywrightWorld** (browser/page from `support/world.mjs`).
 
 ## Store checkout scenario
 

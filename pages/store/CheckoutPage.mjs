@@ -22,6 +22,8 @@ export class CheckoutPage extends BasePage {
       zipInput: 'input[name="postalCode"]',
       giftCard: 'input[name="reductions"]',
       phoneInput: 'input[name="phone"]',
+      financialAidCheckbox: 'input[id="fa-checkbox"]',
+      studentIdInput: 'input[id="student-id"]',
       // If card fields are inside an iframe (e.g. Stripe), use frameLocator and update these
       cardNumberInput: 'input[data-current-field="number"]',
       cardNameInput: 'input[data-current-field="name"]',
@@ -330,6 +332,30 @@ export class CheckoutPage extends BasePage {
     }
   }
 
+  async selectFinancialAidCheckbox() {
+    console.log('📋 Selecting financial aid option...');
+    await humanWait(this.page, 800, 1500);
+    await randomMouseMovement(this.page);
+
+    const checkbox = this.page.locator(this.selectors.financialAidCheckbox).first();
+    await checkbox.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    await checkbox.scrollIntoViewIfNeeded();
+    await humanWait(this.page, 400, 800);
+    await humanClick(this.page, this.selectors.financialAidCheckbox);
+    await humanWait(this.page, 500, 1000);
+  }
+
+  async enterStudentCode(code) {
+    await humanWait(this.page, 500, 1000);
+    await randomMouseMovement(this.page);
+
+    const input = this.page.locator(this.selectors.studentIdInput).first();
+    await input.waitFor({ state: 'visible', timeout: 10000 }).catch(() => {});
+    await input.scrollIntoViewIfNeeded();
+    await humanWait(this.page, 300, 600);
+    await humanType(this.page, this.selectors.studentIdInput, code, { minDelay: 60, maxDelay: 140 });
+    await humanWait(this.page, 300, 600);
+  }
 
   async enterPaymentInfo({ cardNumber, cardName, expiryDate, cvv }) {
     // Brief pause before touching payment section
