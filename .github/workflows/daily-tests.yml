@@ -59,7 +59,7 @@ jobs:
         run: mkdir -p reports
       
       - name: Run tests
-        run: npm run test:store -- --parallel 3 --format html:reports/cucumber-report.html --format progress-bar
+        run: npm run test:store -- --parallel 5 --format html:reports/cucumber-report.html --format progress-bar
         env:
           CI: true
           BASE_URL: ${{ secrets.BASE_URL || 'https://9975.qa-bkstr.com' }}
