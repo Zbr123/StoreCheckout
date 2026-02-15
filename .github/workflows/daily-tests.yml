@@ -1,9 +1,9 @@
 name: Daily Automated Tests
 
 on:
-  # Run every day at 2 AM UTC (adjust timezone as needed)
+  # Run every day at 1:10 PM UTC (13:10)
   schedule:
-    - cron: '0 2 * * *'
+    - cron: '10 13 * * *'
   
   # Allow manual trigger from GitHub Actions UI
   workflow_dispatch:
@@ -111,14 +111,4 @@ jobs:
             echo "All tests passed successfully!"
           fi
       
-      # Optional: Add Slack/Email/Teams notifications here
-      # - name: Notify Slack
-      #   if: failure()
-      #   uses: slackapi/slack-github-action@v1.24.0
-      #   with:
-      #     webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
-      #     payload: |
-      #       {
-      #         "text": "Daily tests failed! Check GitHub Actions for details."
-      #       }
-
+     
