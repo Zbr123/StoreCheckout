@@ -1,9 +1,9 @@
 name: Daily Automated Tests
 
 on:
-  # Run every day at 05:16 AM Pakistan time (GMT+5) = 00:16 UTC
+  # Run every day at 05:40 AM Pakistan time (GMT+5) = 00:40 UTC
   schedule:
-    - cron: '16 0 * * *'
+    - cron: '40 0 * * *'
   
   # Allow manual trigger from GitHub Actions UI
   workflow_dispatch:
