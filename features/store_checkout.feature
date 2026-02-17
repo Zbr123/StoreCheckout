@@ -9,7 +9,9 @@ Feature: Store checkout
     When I wait "5" seconds
     When I click enter using password
     And I enter password "paycro" and submit
+    When I wait "3" seconds
     And I click the "first" product on the dashboard
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -38,7 +40,9 @@ Feature: Store checkout
     When I click enter using password
     And I enter password "paycro" and submit
     And I open the variant product page
+    When I wait "3" seconds
     And I select size variant "Small"
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -66,7 +70,9 @@ Feature: Store checkout
     When I click enter using password
     And I enter password "paycro" and submit
     And I open the variant product page
+    When I wait "3" seconds
     And I select size variant "Medium"
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -94,7 +100,9 @@ Feature: Store checkout
     When I click enter using password
     And I enter password "paycro" and submit
     And I open the variant product page
+    When I wait "3" seconds
     And I select size variant "Large"
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -121,7 +129,9 @@ Feature: Store checkout
     When I wait "5" seconds
     When I click enter using password
     And I enter password "paycro" and submit
+    When I wait "3" seconds
     And I click the "first" product on the dashboard
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -151,7 +161,9 @@ Feature: Store checkout
     When I wait "5" seconds
     When I click enter using password
     And I enter password "paycro" and submit
+    When I wait "3" seconds
     And I click the "first" product on the dashboard
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -181,7 +193,9 @@ Feature: Store checkout
     When I wait "5" seconds
     When I click enter using password
     And I enter password "paycro" and submit
+    When I wait "3" seconds
     And I click the "first" product on the dashboard
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -214,7 +228,9 @@ Feature: Store checkout
     When I wait "5" seconds
     When I click enter using password
     And I enter password "paycro" and submit
+    When I wait "3" seconds
     And I click the "first" product on the dashboard
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -247,8 +263,10 @@ Feature: Store checkout
     When I wait "5" seconds
     When I click enter using password
     And I enter password "paycro" and submit
+    When I wait "3" seconds
     And I click the "first" product on the dashboard
     And I select quantity "2"
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -275,12 +293,14 @@ Feature: Store checkout
     When I wait "5" seconds
     When I click enter using password
     And I enter password "paycro" and submit
+    When I wait "3" seconds
     And I click the "first" product on the dashboard
     And I wait "10" seconds
     And I click add to cart
     When I wait "10" seconds
     And I go back to the previous page
     And I click the "second" product on the dashboard
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
@@ -307,11 +327,14 @@ Feature: Store checkout
     When I wait "5" seconds
     When I click enter using password
     And I enter password "paycro" and submit
+    When I wait "3" seconds
     And I click the "first" product on the dashboard
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I go back to the previous page
     And I click the "second" product on the dashboard
+    When I wait "3" seconds
     And I click add to cart
     When I wait "10" seconds
     And I click checkout
