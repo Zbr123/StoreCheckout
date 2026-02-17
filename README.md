@@ -9,6 +9,7 @@ JavaScript automation framework for **store checkout** using **Playwright**, **C
 - [Prerequisites](#prerequisites)
 - [Setup](#setup)
 - [Run Tests](#run-tests)
+- [CI/CD Pipeline](#cicd-pipeline)
 - [Project Structure](#project-structure)
 - [Scenarios](#scenarios)
 - [Configuration](#configuration)
@@ -60,6 +61,40 @@ npm run test:store:headed
 # All scenarios (ensure BASE_URL points to your store if all features are store-based)
 BASE_URL=https://9975.qa-bkstr.com npm test
 ```
+
+---
+
+## CI/CD Pipeline
+
+This project includes **automated daily test execution** pipelines for GitHub Actions, GitLab CI, and Azure Pipelines.
+
+### 🚀 Quick Start
+
+- **GitHub Actions**: `.github/workflows/daily-tests.yml`
+- **GitLab CI**: `.gitlab-ci.yml`
+- **Azure Pipelines**: `azure-pipelines.yml`
+
+All pipelines are configured to:
+- ✅ Run automatically every 24 hours (2 AM UTC)
+- ✅ Install dependencies and Playwright browsers
+- ✅ Execute tests with `npm run test:store`
+- ✅ Generate and upload test reports
+- ✅ Retain artifacts for 30 days
+
+### 📖 Full Setup Guide
+
+See **[CICD-SETUP.md](./CICD-SETUP.md)** for detailed instructions on:
+- Setting up scheduled runs on your platform
+- Configuring notifications (Slack, email)
+- Customizing schedules and environments
+- Viewing test results and artifacts
+- Troubleshooting common issues
+
+### 🎯 Choose Your Platform
+
+1. **GitHub Actions** (Recommended) - Easiest setup, runs in GitHub
+2. **GitLab CI** - For GitLab repositories
+3. **Azure Pipelines** - For Azure DevOps projects
 
 ---
 
