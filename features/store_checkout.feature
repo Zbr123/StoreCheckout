@@ -4,7 +4,7 @@ Feature: Store checkout
   So that I can receive my order
 
 
-  Scenario: Checkout process with single credit card
+  Scenario: Checkout process with single credit cards
     Given I am on the store password page
     When I wait "5" seconds
     When I click enter using password
